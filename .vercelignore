@@ -9,8 +9,9 @@ __pycache__/
 # Generated client reports stay local.
 reports/
 
-# The CLI copies; api/_lib/ holds the deployed copies.
-geo_audit.py
-website_audit.py
-automation_gap_audit.py
-platinum_audit_pack.py
+# The root CLI copies only. Leading slash anchors these to the repo root so
+# they do NOT also match the deployed copies in api/_lib/.
+/geo_audit.py
+/website_audit.py
+/automation_gap_audit.py
+/platinum_audit_pack.py
