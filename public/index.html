@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1a1a2e">
+<title>Platinum Marketing — Business Audit</title>
+<style>
+  :root{
+    --bg:#1a1a2e;
+    --panel:#20203a;
+    --panel-2:#262647;
+    --line:#33335c;
+    --gold:#d4af37;
+    --gold-soft:rgba(212,175,55,.14);
+    --ink:#f3f3f8;
+    --muted:#a3a3c2;
+    --good:#2ecc71;
+    --warn:#f0a63a;
+    --bad:#e74c3c;
+    --radius:14px;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font:16px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:760px;margin:0 auto;padding:20px 16px 64px}
+
+  header.top{text-align:center;padding:22px 0 10px}
+  header.top .brand{
+    font-size:26px;font-weight:800;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--gold);
+  }
+  header.top .sub{color:var(--muted);font-size:13px;margin-top:4px}
+  .rule{height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:16px 0 22px}
+
+  .card{
+    background:var(--panel);border:1px solid var(--line);
+    border-radius:var(--radius);padding:18px;margin-bottom:16px;
+  }
+  .card > h2{
+    margin:0 0 4px;font-size:12px;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--gold);font-weight:700;
+  }
+  .card > .hint{color:var(--muted);font-size:13px;margin:0 0 14px}
+
+  label.field{display:block;margin-bottom:14px}
+  label.field > span{display:block;font-size:14px;font-weight:600;margin-bottom:6px}
+  label.field .req{color:var(--gold)}
+  input[type=text],input[type=url],input[type=number],input[type=date],select{
+    width:100%;padding:12px 13px;font-size:16px;
+    background:var(--panel-2);color:var(--ink);
+    border:1px solid var(--line);border-radius:10px;
+    appearance:none;-webkit-appearance:none;
+  }
+  input:focus,select:focus{outline:2px solid var(--gold);outline-offset:1px;border-color:var(--gold)}
+  select{background-image:linear-gradient(45deg,transparent 50%,var(--gold) 50%),linear-gradient(135deg,var(--gold) 50%,transparent 50%);
+    background-position:calc(100% - 18px) 21px,calc(100% - 13px) 21px;background-size:5px 5px,5px 5px;background-repeat:no-repeat;padding-right:38px}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  @media (max-width:520px){.row2{grid-template-columns:1fr}}
+
+  /* audit type radio cards */
+  .types{display:grid;gap:10px}
+  .type{
+    display:flex;align-items:center;gap:12px;cursor:pointer;
+    background:var(--panel-2);border:1px solid var(--line);
+    border-radius:10px;padding:13px 14px;
+  }
+  .type input{accent-color:var(--gold);width:20px;height:20px;flex:none;margin:0}
+  .type .t{font-weight:600;font-size:15px}
+  .type .d{color:var(--muted);font-size:12.5px;margin-top:2px}
+  .type:has(input:checked){border-color:var(--gold);background:var(--gold-soft)}
+
+  /* yes/no toggle rows */
+  .toggle{
+    display:flex;align-items:center;justify-content:space-between;gap:14px;
+    padding:11px 0;border-bottom:1px solid var(--line);
+  }
+  .toggle:last-child{border-bottom:0}
+  .toggle .q{font-size:14.5px;flex:1}
+  .toggle .pts{color:var(--muted);font-size:12px;display:block;margin-top:2px}
+  .switch{position:relative;flex:none;width:58px;height:32px}
+  .switch input{position:absolute;opacity:0;width:100%;height:100%;margin:0;cursor:pointer;z-index:2}
+  .switch .track{
+    position:absolute;inset:0;background:#3a3a63;border-radius:999px;
+    transition:background .15s ease;
+  }
+  .switch .track::after{
+    content:"";position:absolute;top:3px;left:3px;width:26px;height:26px;
+    background:#fff;border-radius:50%;transition:transform .15s ease;
+  }
+  .switch .lbl{
+    position:absolute;top:50%;transform:translateY(-50%);font-size:10px;
+    font-weight:800;letter-spacing:.06em;color:#fff;pointer-events:none;
+  }
+  .switch .lbl.no{right:8px;opacity:.85}
+  .switch .lbl.yes{left:8px;opacity:0;color:#1a1a2e}
+  .switch input:checked ~ .track{background:var(--gold)}
+  .switch input:checked ~ .track::after{transform:translateX(26px)}
+  .switch input:checked ~ .lbl.no{opacity:0}
+  .switch input:checked ~ .lbl.yes{opacity:1}
+  .switch input:focus-visible ~ .track{outline:2px solid var(--gold);outline-offset:2px}
+
+  button.go{
+    width:100%;padding:16px;font-size:17px;font-weight:800;letter-spacing:.04em;
+    background:var(--gold);color:#1a1a2e;border:0;border-radius:12px;cursor:pointer;
+    text-transform:uppercase;
+  }
+  button.go:disabled{opacity:.55;cursor:not-allowed}
+  button.ghost{
+    width:100%;padding:14px;font-size:15px;font-weight:700;
+    background:transparent;color:var(--gold);border:1.5px solid var(--gold);
+    border-radius:12px;cursor:pointer;margin-top:14px;
+  }
+  button.ghost:disabled{opacity:.5;cursor:progress}
+
+  .spinner{display:flex;align-items:center;gap:12px;justify-content:center;padding:26px 0}
+  .spinner i{
+    width:28px;height:28px;border-radius:50%;flex:none;
+    border:3px solid var(--line);border-top-color:var(--gold);
+    animation:spin .8s linear infinite;
+  }
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .spinner span{color:var(--muted);font-size:14px}
+
+  .err{
+    background:rgba(231,76,60,.12);border:1px solid var(--bad);
+    color:#ffbdb4;border-radius:10px;padding:13px 14px;font-size:14px;
+  }
+
+  /* results */
+  .hero{text-align:center;padding:6px 0 4px}
+  .hero .num{font-size:60px;font-weight:800;line-height:1.05}
+  .hero .num small{font-size:22px;color:var(--muted);font-weight:600}
+  .hero .grade{
+    display:inline-block;margin-top:6px;padding:3px 12px;border-radius:999px;
+    font-size:12px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;
+  }
+  .hero .verdict{margin:12px auto 0;max-width:52ch;color:var(--ink);font-size:15px}
+  .good{color:var(--good)} .warn{color:var(--warn)} .bad{color:var(--bad)}
+  .chip-good{background:rgba(46,204,113,.16);color:var(--good)}
+  .chip-warn{background:rgba(240,166,58,.16);color:var(--warn)}
+  .chip-bad{background:rgba(231,76,60,.16);color:var(--bad)}
+
+  .mini{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:18px}
+  @media (max-width:520px){.mini{grid-template-columns:1fr}}
+  .mini div{background:var(--panel-2);border:1px solid var(--line);border-radius:10px;padding:12px;text-align:center}
+  .mini .k{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+  .mini .v{font-size:22px;font-weight:800;margin-top:3px}
+  .mini .w{font-size:11px;color:var(--muted)}
+
+  h3.sec{font-size:15px;margin:0 0 2px;color:var(--ink)}
+  .sec-score{font-size:13px;color:var(--muted);margin-bottom:10px}
+  .verdict-line{font-size:14px;color:var(--ink);margin:0 0 14px}
+
+  .line{padding:9px 0;border-bottom:1px solid var(--line)}
+  .line:last-child{border-bottom:0}
+  .line .top{display:flex;justify-content:space-between;gap:10px;align-items:baseline}
+  .line .nm{font-size:14px;font-weight:600}
+  .line .sc{font-size:13px;font-weight:700;flex:none}
+  .line .dt{font-size:12.5px;color:var(--muted);margin-top:1px}
+  .bar{height:5px;background:var(--panel-2);border-radius:99px;margin-top:6px;overflow:hidden}
+  .bar i{display:block;height:100%;border-radius:99px}
+  .bar i.good{background:var(--good)} .bar i.warn{background:var(--warn)} .bar i.bad{background:var(--bad)}
+
+  ul.list{margin:0;padding-left:18px}
+  ul.list li{font-size:13.5px;color:var(--muted);margin-bottom:7px}
+  ol.fixes{margin:0;padding-left:20px}
+  ol.fixes li{font-size:14px;margin-bottom:10px}
+  ol.fixes b{color:var(--gold)}
+  ol.fixes .n8n{display:block;font-size:12.5px;color:var(--muted);margin-top:3px}
+  .area-tag{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+
+  table.money{width:100%;border-collapse:collapse;margin-top:4px}
+  table.money th,table.money td{text-align:left;font-size:13px;padding:7px 0;border-bottom:1px solid var(--line)}
+  table.money th{color:var(--muted);font-size:11px;letter-spacing:.07em;text-transform:uppercase;font-weight:700}
+  table.money td:last-child,table.money th:last-child{text-align:right;font-weight:700;white-space:nowrap}
+  table.money tr.total td{border-bottom:0;border-top:2px solid var(--gold);font-weight:800;color:var(--gold)}
+  .basis{font-size:11.5px;color:var(--muted);margin-top:8px;font-style:italic}
+
+  .snap{font-size:13.5px;color:var(--muted)}
+  .snap b{color:var(--ink)}
+  [hidden]{display:none !important}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div class="brand">Platinum Marketing</div>
+    <div class="sub">Local search intelligence for the AI era</div>
+  </header>
+  <div class="rule"></div>
+
+  <form id="form" novalidate>
+
+    <section class="card">
+      <h2>Business</h2>
+      <label class="field">
+        <span>Business name <i class="req">*</i></span>
+        <input type="text" id="business" required placeholder="Aqua Plumbing" autocomplete="organization">
+      </label>
+      <label class="field">
+        <span>Website URL</span>
+        <input type="url" id="url" placeholder="aquaplumbing.co.uk" inputmode="url" autocomplete="url">
+      </label>
+      <div class="row2">
+        <label class="field">
+          <span>Industry</span>
+          <select id="industry">
+            <option>Roofing</option>
+            <option selected>Plumbing</option>
+            <option>Electrical</option>
+            <option>Landscaping</option>
+            <option>Cleaning</option>
+            <option>Real Estate</option>
+            <option value="Other">Other</option>
+          </select>
+        </label>
+        <label class="field">
+          <span>Country</span>
+          <select id="country">
+            <option selected>UK</option>
+            <option>Kenya</option>
+          </select>
+        </label>
+      </div>
+      <label class="field" id="other-wrap" hidden>
+        <span>Describe the trade</span>
+        <input type="text" id="industry_other" placeholder="e.g. locksmith">
+      </label>
+      <label class="field" style="margin-bottom:0">
+        <span>City / area</span>
+        <input type="text" id="area" placeholder="Bristol" autocomplete="address-level2">
+      </label>
+    </section>
+
+    <section class="card">
+      <h2>Audit type</h2>
+      <div class="types">
+        <label class="type">
+          <input type="radio" name="audit_type" value="geo" checked>
+          <div><div class="t">GEO Audit Only</div><div class="d">Do AI assistants recommend this business?</div></div>
+        </label>
+        <label class="type">
+          <input type="radio" name="audit_type" value="website">
+          <div><div class="t">Website Audit Only</div><div class="d">Health of the site that receives the traffic</div></div>
+        </label>
+        <label class="type">
+          <input type="radio" name="audit_type" value="automation">
+          <div><div class="t">Automation Gap Audit</div><div class="d">Where leads leak through manual follow-up</div></div>
+        </label>
+        <label class="type">
+          <input type="radio" name="audit_type" value="full">
+          <div><div class="t">Full Audit Pack</div><div class="d">All three, combined into one weighted score</div></div>
+        </label>
+      </div>
+    </section>
+
+    <section class="card" id="panel-geo">
+      <h2>AI visibility signals</h2>
+      <p class="hint">Check the Google Business Profile before answering.</p>
+      <div class="row2">
+        <label class="field"><span>Google review count</span>
+          <input type="number" id="geo_reviews" min="0" step="1" value="0" inputmode="numeric"></label>
+        <label class="field"><span>Directory listings</span>
+          <input type="number" id="geo_directories" min="0" step="1" value="0" inputmode="numeric"></label>
+      </div>
+      <label class="field"><span>Date of last review <em style="color:var(--muted);font-weight:400">(leave blank if none)</em></span>
+        <input type="date" id="geo_last_review"></label>
+      <div id="geo_toggles"></div>
+    </section>
+
+    <section class="card" id="panel-website">
+      <h2>Website health signals</h2>
+      <p class="hint">Open the site on a phone and time the homepage load.</p>
+      <label class="field"><span>Homepage load time (seconds)</span>
+        <input type="number" id="web_load_time" min="0" step="0.1" value="3" inputmode="decimal"></label>
+      <div id="web_toggles"></div>
+    </section>
+
+    <section class="card" id="panel-automation">
+      <h2>Automation discovery</h2>
+      <p class="hint">Nine yes/no questions. The money figures use the two numbers below.</p>
+      <div class="row2">
+        <label class="field"><span id="job_value_label">Average job value (£)</span>
+          <input type="number" id="auto_avg_job_value" min="0" step="1" value="0" inputmode="decimal"></label>
+        <label class="field"><span>Enquiries per month</span>
+          <input type="number" id="auto_monthly_leads" min="0" step="1" value="0" inputmode="numeric"></label>
+      </div>
+      <div id="auto_toggles"></div>
+    </section>
+
+    <button class="go" id="submit" type="submit">Run audit</button>
+  </form>
+
+  <div class="card" id="loading" hidden>
+    <div class="spinner"><i></i><span id="loading-text">Scoring…</span></div>
+  </div>
+
+  <div class="card" id="error" hidden><div class="err" id="error-text"></div></div>
+
+  <div id="results" hidden></div>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  // Mirrors QUESTIONS in api/_lib/automation_gap_audit.py — keep in step.
+  var AUTO_QUESTIONS = [
+    ["fast_response", "Does every new enquiry get a reply within 5 minutes, automatically?", 15],
+    ["chases_leads", "Are leads who don't book chased automatically?", 15],
+    ["appointment_system", "Do booked jobs get automatic reminders, with no-show recovery?", 15],
+    ["review_requests", "Is a review request sent automatically after every completed job?", 10],
+    ["quote_followup", "Are sent quotes chased automatically when there's no response?", 10],
+    ["invoice_chasing", "Do overdue invoices trigger automatic payment reminders?", 10],
+    ["repeat_campaigns", "Are past customers re-engaged automatically?", 10],
+    ["messaging_automation", "Is any customer messaging automated (WhatsApp or SMS)?", 10],
+    ["owner_alerts", "Does the owner get notified automatically when something important happens?", 5]
+  ];
+
+  var GEO_TOGGLES = [
+    ["has_website", "Has a website", 0],
+    ["has_faq", "Has an FAQ page", 10],
+    ["gbp_complete", "Google Business Profile is complete", 15],
+    ["has_schema", "Website has LocalBusiness schema markup", 10]
+  ];
+
+  var WEB_TOGGLES = [
+    ["mobile", "Mobile responsive", 15],
+    ["ssl", "HTTPS / SSL enabled", 10],
+    ["title", "Title tag present", 4],
+    ["meta", "Meta description present", 3],
+    ["h1", "H1 heading present", 3],
+    ["contact", "Contact info visible on the homepage", 10],
+    ["cta", "Clear call-to-action on every page", 10],
+    ["gbp_linked", "Google Business Profile linked", 10],
+    ["schema", "Schema markup present", 10],
+    ["testimonials", "Testimonials or reviews shown", 5],
+    ["chat_payment", "WhatsApp click-to-chat (M-Pesa in Kenya)", 5]
+  ];
+
+  var PANELS = {
+    geo: ["panel-geo"],
+    website: ["panel-website"],
+    automation: ["panel-automation"],
+    full: ["panel-geo", "panel-website", "panel-automation"]
+  };
+
+  var $ = function (id) { return document.getElementById(id); };
+  var lastPayload = null, lastResult = null;
+
+  function esc(value) {
+    return String(value === null || value === undefined ? "" : value)
+      .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+  }
+
+  function band(score) {
+    if (score >= 70) return "good";
+    if (score >= 40) return "warn";
+    return "bad";
+  }
+
+  function toggleRow(prefix, key, question, points) {
+    return '<div class="toggle">' +
+      '<label class="q" for="' + prefix + key + '">' + esc(question) +
+      (points ? '<span class="pts">' + points + ' pts</span>' : '') +
+      '</label>' +
+      '<span class="switch">' +
+        '<input type="checkbox" id="' + prefix + key + '" data-key="' + key + '">' +
+        '<span class="track"></span>' +
+        '<span class="lbl yes">YES</span><span class="lbl no">NO</span>' +
+      '</span></div>';
+  }
+
+  function renderToggles(containerId, prefix, rows) {
+    $(containerId).innerHTML = rows.map(function (r) {
+      return toggleRow(prefix, r[0], r[1], r[2]);
+    }).join("");
+  }
+
+  renderToggles("geo_toggles", "geo_", GEO_TOGGLES);
+  renderToggles("web_toggles", "web_", WEB_TOGGLES);
+  renderToggles("auto_toggles", "auto_", AUTO_QUESTIONS);
+
+  function auditType() {
+    return document.querySelector('input[name="audit_type"]:checked').value;
+  }
+
+  function syncPanels() {
+    var show = PANELS[auditType()];
+    ["panel-geo", "panel-website", "panel-automation"].forEach(function (id) {
+      $(id).hidden = show.indexOf(id) === -1;
+    });
+  }
+
+  function syncCountry() {
+    var symbol = $("country").value === "Kenya" ? "KSh" : "£";
+    $("job_value_label").textContent = "Average job value (" + symbol + ")";
+  }
+
+  function syncIndustry() {
+    $("other-wrap").hidden = $("industry").value !== "Other";
+  }
+
+  document.querySelectorAll('input[name="audit_type"]').forEach(function (el) {
+    el.addEventListener("change", syncPanels);
+  });
+  $("country").addEventListener("change", syncCountry);
+  $("industry").addEventListener("change", syncIndustry);
+  syncPanels(); syncCountry(); syncIndustry();
+
+  function toggleValues(prefix, rows) {
+    var out = {};
+    rows.forEach(function (r) { out[r[0]] = $(prefix + r[0]).checked; });
+    return out;
+  }
+
+  function num(id) {
+    var raw = parseFloat($(id).value);
+    return isFinite(raw) && raw >= 0 ? raw : 0;
+  }
+
+  function collect() {
+    var type = auditType();
+    var industry = $("industry").value;
+    if (industry === "Other") {
+      industry = $("industry_other").value.trim() || "Other";
+    }
+
+    var payload = {
+      audit_type: type,
+      business: $("business").value.trim(),
+      url: $("url").value.trim(),
+      industry: industry,
+      country: $("country").value,
+      area: $("area").value.trim()
+    };
+
+    if (type === "geo" || type === "full") {
+      payload.geo = Object.assign({
+        reviews: num("geo_reviews"),
+        directories: num("geo_directories"),
+        last_review: $("geo_last_review").value || "never"
+      }, toggleValues("geo_", GEO_TOGGLES));
+    }
+    if (type === "website" || type === "full") {
+      payload.website = Object.assign(
+        { load_time: num("web_load_time") }, toggleValues("web_", WEB_TOGGLES));
+    }
+    if (type === "automation" || type === "full") {
+      payload.automation = Object.assign({
+        avg_job_value: num("auto_avg_job_value"),
+        monthly_leads: num("auto_monthly_leads")
+      }, toggleValues("auto_", AUTO_QUESTIONS));
+    }
+    return payload;
+  }
+
+  function showError(message) {
+    $("error-text").textContent = message;
+    $("error").hidden = false;
+  }
+
+  function lineRow(line) {
+    var cls = band(line.percent);
+    return '<div class="line">' +
+      '<div class="top"><span class="nm">' + esc(line.label) + '</span>' +
+      '<span class="sc ' + cls + '">' + line.score + '/' + line.maximum + '</span></div>' +
+      '<div class="dt">' + esc(line.detail) + '</div>' +
+      '<div class="bar"><i class="' + cls + '" style="width:' + line.percent + '%"></i></div>' +
+      '</div>';
+  }
+
+  function sectionCard(section, showWeight) {
+    var html = '<div class="card">' +
+      '<h2>' + esc(section.title) + '</h2>' +
+      '<h3 class="sec">' +
+        '<span class="' + band(section.score) + '">' + section.score + '/100</span> · Grade ' +
+        esc(section.grade) +
+      '</h3>' +
+      '<div class="sec-score">' +
+        (showWeight ? Math.round(section.weight * 100) + '% of the combined score' : '&nbsp;') +
+      '</div>' +
+      '<p class="verdict-line">' + esc(section.verdict) + '</p>';
+
+    if (section.ai) {
+      html += '<p class="snap"><b>AI asked:</b> ' + esc(section.ai.question) + '<br>' +
+        '<b>Result:</b> ' + esc(section.ai.summary) +
+        (section.ai.competitors && section.ai.competitors.length
+          ? '<br><b>Competitors named:</b> ' + esc(section.ai.competitors.slice(0, 5).join(", "))
+          : '') + '</p>';
+    }
+    if (section.note) {
+      html += '<p class="snap"><i>' + esc(section.note) + '</i></p>';
+    }
+
+    html += '<div style="margin-top:12px">' + section.lines.map(lineRow).join("") + '</div>';
+
+    if (section.revenue && section.revenue.leaks.length) {
+      html += '<h2 style="margin-top:18px">Monthly revenue at risk</h2>' +
+        '<table class="money"><tr><th>Gap</th><th>Assumed loss</th><th>Impact</th></tr>' +
+        section.revenue.leaks.map(function (leak) {
+          return '<tr><td>' + esc(leak.label) + '</td><td>' + esc(leak.rate_label) +
+            '</td><td>' + esc(leak.formatted) + '</td></tr>';
+        }).join("") +
+        '<tr class="total"><td>Total at risk</td><td></td><td>' +
+        esc(section.revenue.formatted) + '</td></tr></table>' +
+        '<p class="basis">' + esc(section.revenue.basis) + '</p>';
+    }
+
+    if (section.missing && section.missing.length) {
+      html += '<h2 style="margin-top:18px">What’s missing</h2><ul class="list">' +
+        section.missing.map(function (item) { return '<li>' + esc(item) + '</li>'; }).join("") +
+        '</ul>';
+    }
+    return html + '</div>';
+  }
+
+  function render(result) {
+    var cls = band(result.score);
+    var html = '<div class="card"><div class="hero">' +
+      '<div class="num ' + cls + '">' + result.score + '<small>/100</small></div>' +
+      '<div class="grade chip-' + cls + '">Grade ' + esc(result.grade) + '</div>' +
+      '<p class="verdict">' + esc(result.verdict) + '</p>' +
+      '<p class="snap" style="margin-top:10px">' + esc(result.business) +
+        ' · ' + esc(result.trade) + (result.area ? ' · ' + esc(result.area) : '') +
+        ' · ' + esc(result.generated_label) + '</p>';
+
+    if (result.audit_type === "full") {
+      html += '<div class="mini">' + result.sections.map(function (s) {
+        return '<div><div class="k">' + esc(s.title) + '</div>' +
+          '<div class="v ' + band(s.score) + '">' + s.score + '</div>' +
+          '<div class="w">weight ' + Math.round(s.weight * 100) + '%</div></div>';
+      }).join("") + '</div>';
+    }
+    html += '</div></div>';
+
+    result.sections.forEach(function (section) {
+      html += sectionCard(section, result.audit_type === "full");
+    });
+
+    if (result.plan && result.plan.length) {
+      html += '<div class="card"><h2>' +
+        (result.audit_type === "full" ? "Priority action plan" : "Top fixes") +
+        '</h2><ol class="fixes">' +
+        result.plan.map(function (item) {
+          return '<li><b>' + esc(item.title) + '</b>' +
+            (result.audit_type === "full" && item.area
+              ? ' <span class="area-tag">' + esc(item.area) + '</span>' : '') +
+            '<br>' + esc(item.detail) +
+            (item.n8n ? '<span class="n8n"><b>n8n:</b> ' + esc(item.n8n) + '</span>' : '') +
+            '</li>';
+        }).join("") + '</ol>' +
+        '<button class="ghost" id="dl">Download PDF</button></div>';
+    }
+
+    $("results").innerHTML = html;
+    $("results").hidden = false;
+    var dl = $("dl");
+    if (dl) dl.addEventListener("click", download);
+    $("results").scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
+  function download() {
+    if (!lastPayload || !lastResult) return;
+    var button = $("dl");
+    button.disabled = true;
+    button.textContent = "Building PDF…";
+
+    var body = Object.assign({}, lastPayload, {
+      ai: lastResult.ai,
+      website_note: lastResult.website_note === null ? "" : lastResult.website_note
+    });
+
+    fetch("/api/download", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body)
+    }).then(function (response) {
+      if (!response.ok) {
+        return response.json().then(function (data) {
+          throw new Error(data.error || "The PDF failed to build.");
+        });
+      }
+      return response.blob();
+    }).then(function (blob) {
+      var url = URL.createObjectURL(blob);
+      var link = document.createElement("a");
+      link.href = url;
+      link.download = lastResult.pdf_name || "platinum-audit.pdf";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      setTimeout(function () { URL.revokeObjectURL(url); }, 4000);
+    }).catch(function (error) {
+      showError(error.message);
+    }).then(function () {
+      button.disabled = false;
+      button.textContent = "Download PDF";
+    });
+  }
+
+  $("form").addEventListener("submit", function (event) {
+    event.preventDefault();
+    $("error").hidden = true;
+    $("results").hidden = true;
+
+    var payload = collect();
+    if (!payload.business) {
+      showError("Business name is required.");
+      return;
+    }
+    if ((payload.audit_type === "geo" || payload.audit_type === "full") && !payload.area) {
+      showError("City / area is required for the GEO audit — it is what the AI is asked about.");
+      return;
+    }
+    if ((payload.audit_type === "website" || payload.audit_type === "full") && !payload.url) {
+      showError("Website URL is required for the website audit.");
+      return;
+    }
+
+    lastPayload = payload;
+    $("submit").disabled = true;
+    $("loading-text").textContent =
+      (payload.audit_type === "geo" || payload.audit_type === "full")
+        ? "Running the live AI search… this can take up to a minute."
+        : "Scoring…";
+    $("loading").hidden = false;
+
+    fetch("/api/audit", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    }).then(function (response) {
+      return response.json().then(function (data) {
+        if (!response.ok || !data.ok) {
+          throw new Error(data.error || "The audit failed to run.");
+        }
+        return data;
+      });
+    }).then(function (data) {
+      lastResult = data;
+      render(data);
+    }).catch(function (error) {
+      showError(error.message);
+    }).then(function () {
+      $("loading").hidden = true;
+      $("submit").disabled = false;
+    });
+  });
+})();
+</script>
+</body>
+</html>

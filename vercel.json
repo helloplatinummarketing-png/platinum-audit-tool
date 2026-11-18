@@ -1,0 +1,16 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "functions": {
+    "api/audit.py": {
+      "maxDuration": 60,
+      "includeFiles": "api/**"
+    },
+    "api/download.py": {
+      "maxDuration": 60,
+      "includeFiles": "api/**"
+    }
+  },
+  "rewrites": [
+    { "source": "/((?!api/).*)", "destination": "/index.html" }
+  ]
+}

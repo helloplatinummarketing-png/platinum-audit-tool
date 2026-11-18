@@ -1,0 +1,16 @@
+# Keep the deployment to the app itself.
+.venv/
+__pycache__/
+*.pyc
+.ruff_cache/
+.claude/
+.env
+
+# Generated client reports stay local.
+reports/
+
+# The CLI copies; api/_lib/ holds the deployed copies.
+geo_audit.py
+website_audit.py
+automation_gap_audit.py
+platinum_audit_pack.py
