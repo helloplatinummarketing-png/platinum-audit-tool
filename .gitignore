@@ -15,3 +15,6 @@ reports/
 
 # Vercel
 .vercel
+
+# Local Claude Code settings
+.claude/
