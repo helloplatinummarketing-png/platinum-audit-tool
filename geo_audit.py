@@ -48,7 +48,10 @@ from reportlab.platypus import (
 
 BRAND = "Platinum"
 REPORT_TITLE = "Platinum AI Visibility Audit"
-DEFAULT_MODEL = "gemini-3.8-flash"
+# gemini-3.8-flash answers this prompt in 70-150s, which overruns the 60s
+# function limit on Vercel and returned FUNCTION_INVOCATION_TIMEOUT every time.
+# flash-lite answers the same prompt in ~1.5s with comparable business names.
+DEFAULT_MODEL = "gemini-3.1-flash-lite"
 CTA_SITE = "platinummarketingagency.co.uk"
 # No public phone number yet, so the CTA band points at the site only. Set this
 # to the real number (e.g. "+44 7700 900123") and it is appended automatically.
