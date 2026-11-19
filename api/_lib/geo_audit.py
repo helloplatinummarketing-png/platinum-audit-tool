@@ -50,7 +50,9 @@ BRAND = "Platinum"
 REPORT_TITLE = "Platinum AI Visibility Audit"
 DEFAULT_MODEL = "gemini-3.8-flash"
 CTA_SITE = "platinummarketingagency.co.uk"
-CTA_PHONE = "[PHONE]"
+# No public phone number yet, so the CTA band points at the site only. Set this
+# to the real number (e.g. "+44 7700 900123") and it is appended automatically.
+CTA_PHONE = ""
 
 INK = colors.HexColor("#14161A")
 GOLD = colors.HexColor("#B8914B")
@@ -954,10 +956,11 @@ def cta_block(headline: str, styles: dict[str, ParagraphStyle], width: float) ->
     """Return the gold call-to-action band used at the foot of every report."""
     cta_text = (
         f"<b>{html.escape(headline)}</b><br/>"
-        "Contact Platinum Marketing — "
+        "Contact us at "
         f"<link href='https://{CTA_SITE}' color='#14161A'>{CTA_SITE}</link>"
-        f" · {html.escape(CTA_PHONE)}"
     )
+    if CTA_PHONE.strip():
+        cta_text += f" · {html.escape(CTA_PHONE)}"
     cta = Table([[Paragraph(cta_text, styles["cta"])]], colWidths=[width])
     cta.setStyle(
         TableStyle(
