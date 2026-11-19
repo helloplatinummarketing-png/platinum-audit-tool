@@ -477,6 +477,10 @@ def query_industry_note(
                 system_instruction=system_prompt,
                 max_output_tokens=200,
                 temperature=0,
+                # A 30-word sentence needs no reasoning. Thinking tokens count
+                # against the 200 above, so left on they can consume the whole
+                # budget and return an empty note.
+                thinking_config=genai_types.ThinkingConfig(thinking_budget=0),
             ),
         )
     except genai_errors.APIError as exc:

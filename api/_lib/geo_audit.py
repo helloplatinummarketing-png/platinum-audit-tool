@@ -297,6 +297,10 @@ def query_ai(trade: str, area: str, model: str, business: str) -> AIResult:
                 system_instruction=system_prompt,
                 max_output_tokens=700,
                 temperature=0,
+                # Listing names needs no reasoning, and thinking tokens are
+                # billed against max_output_tokens - left on, they can eat the
+                # budget and truncate the list the whole audit depends on.
+                thinking_config=genai_types.ThinkingConfig(thinking_budget=0),
             ),
         )
     except genai_errors.APIError as exc:
